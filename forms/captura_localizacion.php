@@ -106,26 +106,104 @@
         .progress { height: 1.2rem; border-radius: 0.75rem; background: #f3e6fa; margin-bottom: 1.5rem; }
         .progress-bar { background: linear-gradient(90deg, #8e24aa 0%, #d81b60 100%); font-weight: 600; font-size: 1em; }
         
-        /* Barra de progreso sticky */
-        .progress-sticky {
+        /* Barra de progreso debajo del header */
+        .progress-header {
             position: fixed;
-            top: 0;
+            top: 80px; /* Debajo del header */
             left: 0;
             right: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid #8e24aa;
-            padding: 0.5rem 1rem;
-            box-shadow: 0 2px 10px rgba(142, 36, 170, 0.2);
+            z-index: 999;
+            background: linear-gradient(135deg, #8e24aa 0%, #d81b60 100%);
+            color: white;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 4px 20px rgba(142, 36, 170, 0.3);
             transition: all 0.3s ease;
-            opacity: 0;
             transform: translateY(-100%);
+            opacity: 0;
         }
         
-        .progress-sticky.show {
-            opacity: 1;
+        .progress-header.show {
             transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .progress-header.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        
+        .progress-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .progress-title {
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+        
+        .progress-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .progress-bar-container {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .progress-header .progress {
+            height: 0.8rem;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0;
+        }
+        
+        .progress-header .progress-bar {
+            background: rgba(255, 255, 255, 0.9);
+            color: #8e24aa;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .progress-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .progress-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .progress-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .time-estimate {
+            font-size: 0.8rem;
+            opacity: 0.9;
         }
         
         .progress-sticky .progress {
@@ -145,10 +223,36 @@
         @media (max-width: 600px) { .form-card { padding: 1rem 0.5rem; } }
     </style>
 
-    <!-- Barra de progreso sticky -->
-    <div class="progress-sticky" id="progressSticky">
-        <div class="progress">
-            <div id="barraProgresoSticky" class="progress-bar" role="progressbar" style="width: 0%">0%</div>
+    <!-- Barra de progreso debajo del header -->
+    <div class="progress-header" id="progressHeader">
+        <div class="progress-header-content">
+            <div class="progress-info">
+                <div class="progress-title">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Avance de captura: Referencia geográfica / Demografía básica
+                </div>
+                <div class="progress-stats">
+                    <span id="progressPercentage">0%</span>
+                    <span id="progressFields">0/12 campos</span>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress">
+                    <div id="barraProgresoHeader" class="progress-bar" role="progressbar" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="progress-controls">
+                <button class="progress-btn" onclick="toggleProgress()" title="Ocultar/Mostrar barra">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="progress-btn" onclick="goToNextEmpty()" title="Ir al siguiente campo vacío">
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+                <div class="time-estimate" id="timeEstimate">
+                    <i class="fas fa-clock me-1"></i>
+                    <span id="timeText">~5 min</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -235,6 +339,10 @@
     </div>
 
     <script>
+    // Variables globales
+    let progressHidden = false;
+    let startTime = Date.now();
+    
     // Barra de avance dinámica mejorada
     function actualizarBarra() {
         const total = document.querySelectorAll('.campo-captura').length;
@@ -244,25 +352,79 @@
         });
         const porcentaje = Math.round((llenos / total) * 100);
         
-        // Actualizar ambas barras de progreso
+        // Actualizar barra original
         const barraOriginal = document.getElementById('barraProgreso');
-        const barraSticky = document.getElementById('barraProgresoSticky');
-        
         if (barraOriginal) {
             barraOriginal.style.width = porcentaje + '%';
             barraOriginal.textContent = porcentaje + '%';
         }
         
-        if (barraSticky) {
-            barraSticky.style.width = porcentaje + '%';
-            barraSticky.textContent = porcentaje + '%';
+        // Actualizar barra del header
+        const barraHeader = document.getElementById('barraProgresoHeader');
+        if (barraHeader) {
+            barraHeader.style.width = porcentaje + '%';
+            barraHeader.textContent = porcentaje + '%';
         }
         
-        // Efecto visual adicional para la barra sticky
-        if (porcentaje > 0) {
-            document.getElementById('progressSticky').style.boxShadow = '0 4px 20px rgba(142, 36, 170, 0.3)';
+        // Actualizar estadísticas
+        const progressPercentage = document.getElementById('progressPercentage');
+        const progressFields = document.getElementById('progressFields');
+        
+        if (progressPercentage) progressPercentage.textContent = porcentaje + '%';
+        if (progressFields) progressFields.textContent = llenos + '/' + total + ' campos';
+        
+        // Actualizar tiempo estimado
+        actualizarTiempoEstimado(porcentaje, total, llenos);
+    }
+    
+    // Calcular tiempo estimado
+    function actualizarTiempoEstimado(porcentaje, total, llenos) {
+        const tiempoTranscurrido = (Date.now() - startTime) / 1000; // en segundos
+        const tiempoPorCampo = llenos > 0 ? tiempoTranscurrido / llenos : 30; // 30 segundos por defecto
+        const camposRestantes = total - llenos;
+        const tiempoRestante = camposRestantes * tiempoPorCampo;
+        
+        const timeText = document.getElementById('timeText');
+        if (timeText) {
+            if (porcentaje === 100) {
+                timeText.textContent = '¡Completado!';
+            } else if (tiempoRestante < 60) {
+                timeText.textContent = `~${Math.round(tiempoRestante)}s`;
+            } else if (tiempoRestante < 3600) {
+                timeText.textContent = `~${Math.round(tiempoRestante / 60)}m`;
+            } else {
+                timeText.textContent = `~${Math.round(tiempoRestante / 3600)}h`;
+            }
+        }
+    }
+    
+    // Ocultar/Mostrar barra de progreso
+    function toggleProgress() {
+        const progressHeader = document.getElementById('progressHeader');
+        const toggleBtn = document.querySelector('.progress-btn i.fa-eye, .progress-btn i.fa-eye-slash');
+        
+        if (progressHidden) {
+            progressHeader.classList.remove('hidden');
+            progressHeader.classList.add('show');
+            toggleBtn.className = 'fas fa-eye';
+            progressHidden = false;
         } else {
-            document.getElementById('progressSticky').style.boxShadow = '0 2px 10px rgba(142, 36, 170, 0.2)';
+            progressHeader.classList.remove('show');
+            progressHeader.classList.add('hidden');
+            toggleBtn.className = 'fas fa-eye-slash';
+            progressHidden = true;
+        }
+    }
+    
+    // Ir al siguiente campo vacío
+    function goToNextEmpty() {
+        const campos = document.querySelectorAll('.campo-captura');
+        for (let campo of campos) {
+            if (campo.value.trim() === '') {
+                campo.focus();
+                campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                break;
+            }
         }
     }
     
@@ -280,9 +442,9 @@
         // Actualizar la barra inicial
         actualizarBarra();
         
-        // Efecto de aparición suave para la barra sticky
+        // Mostrar la barra de progreso con animación
         setTimeout(() => {
-            document.getElementById('progressSticky').classList.add('show');
+            document.getElementById('progressHeader').classList.add('show');
         }, 100);
     });
     
