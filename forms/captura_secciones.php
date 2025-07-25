@@ -39,11 +39,11 @@ function seccion_estado($tabla, $id_entidad, $conn) {
     $stmt->close();
     return $estado;
 }
-$estado_localizacion = seccion_estado('DatosLocalizacion', $id_entidad, $conn);
-$estado_tipologia = seccion_estado('TipologiaTerritorial', $id_entidad, $conn);
-$estado_ambiental = seccion_estado('DatosAmbientales', $id_entidad, $conn);
-$estado_social = seccion_estado('DatosSociales', $id_entidad, $conn);
-$estado_economica = seccion_estado('DatosEconomicos', $id_entidad, $conn);
+$estado_localizacion = seccion_estado('datoslocalizacion', $id_entidad, $conn);
+$estado_tipologia = seccion_estado('tipologiaterritorial', $id_entidad, $conn);
+$estado_ambiental = seccion_estado('datosambientales', $id_entidad, $conn);
+$estado_social = seccion_estado('datossociales', $id_entidad, $conn);
+$estado_economica = seccion_estado('datoseconomicos', $id_entidad, $conn);
 
 // Definir título de la página para el header
 $titulo_pagina = 'Captura de Variables/Indicadores';

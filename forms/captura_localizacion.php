@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores[] = 'El campo fuente de datos es obligatorio.';
     }
     if (empty($errores)) {
-        $stmt = $conn->prepare("INSERT INTO DatosLocalizacion (id_entidad, fuente_datos, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO datoslocalizacion (id_entidad, fuente_datos, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param('issssssiii iii', $id_entidad, $fuente_datos, $valores['R1'], $valores['R2'], $valores['R3'], $valores['R4'], $valores['R5'], $valores['R6'], $valores['R7'], $valores['R8'], $valores['R9'], $valores['R10'], $valores['R11']);
         if ($stmt->execute()) {
             $exito = true;
