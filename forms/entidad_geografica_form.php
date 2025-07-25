@@ -1,8 +1,8 @@
 <?php
-// Configuración de conexión (ajusta según tus datos)
+// Configuración de conexión para la nube
 $host = 'localhost';
-$user = 'root';
-$pass = '';
+$user = 'fcoalder_sensea';
+$pass = 'Sensea2025';
 $db = 'fcoalder_SENSEA';
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -32,32 +32,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Buscar si ya existe la entidad
     if (empty($errores)) {
         $stmt = $conn->prepare("SELECT id_entidad FROM entidadesgeograficas WHERE tipo_entidad = ? AND nombre_entidad = ? LIMIT 1");
-        $stmt->bind_param('ss', $tipo_entidad, $nombre_entidad);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            $stmt->bind_result($id_entidad_existente);
-            $stmt->fetch();
-            $entidad_existente = $id_entidad_existente;
-            // Redirigir a la siguiente etapa de captura
-            header('Location: captura_secciones.php?id_entidad=' . $entidad_existente);
-            exit;
+        if ($stmt === false) {
+            $errores[] = 'Error en la consulta de búsqueda: ' . $conn->error;
+        } else {
+            $stmt->bind_param('ss', $tipo_entidad, $nombre_entidad);
+            if ($stmt->execute()) {
+                $stmt->store_result();
+                if ($stmt->num_rows > 0) {
+                    $stmt->bind_result($id_entidad_existente);
+                    $stmt->fetch();
+                    $entidad_existente = $id_entidad_existente;
+                    // Redirigir a la siguiente etapa de captura
+                    header('Location: captura_secciones.php?id_entidad=' . $entidad_existente);
+                    exit;
+                }
+            } else {
+                $errores[] = 'Error al ejecutar la consulta de búsqueda: ' . $stmt->error;
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 
     // Si no existe, insertar
     if (empty($errores) && !$entidad_existente) {
         $stmt = $conn->prepare("INSERT INTO entidadesgeograficas (tipo_entidad, nombre_entidad, codigo_entidad, fuente_general, fecha_registro) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param('sssss', $tipo_entidad, $nombre_entidad, $codigo_entidad, $fuente_general, $fecha_registro);
-        if ($stmt->execute()) {
-            $exito = true;
-            header('Location: captura_secciones.php?id_entidad=' . $conn->insert_id);
-            exit;
+        if ($stmt === false) {
+            $errores[] = 'Error en la consulta de inserción: ' . $conn->error;
         } else {
-            $errores[] = 'Error al guardar: ' . $stmt->error;
+            $stmt->bind_param('sssss', $tipo_entidad, $nombre_entidad, $codigo_entidad, $fuente_general, $fecha_registro);
+            if ($stmt->execute()) {
+                $exito = true;
+                header('Location: captura_secciones.php?id_entidad=' . $conn->insert_id);
+                exit;
+            } else {
+                $errores[] = 'Error al guardar: ' . $stmt->error;
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 

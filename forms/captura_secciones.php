@@ -1,8 +1,8 @@
 <?php
-// Configuración de conexión
+// Configuración de conexión para la nube
 $host = 'localhost';
-$user = 'root';
-$pass = '';
+$user = 'fcoalder_sensea';
+$pass = 'Sensea2025';
 $db = 'fcoalder_SENSEA';
 
 $conn = new mysqli($host, $user, $pass, $db);
