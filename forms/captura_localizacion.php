@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (empty($errores)) {
         $stmt = $conn->prepare("INSERT INTO datoslocalizacion (id_entidad, fuente_datos, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('issssssiii iii', $id_entidad, $fuente_datos, $valores['R1'], $valores['R2'], $valores['R3'], $valores['R4'], $valores['R5'], $valores['R6'], $valores['R7'], $valores['R8'], $valores['R9'], $valores['R10'], $valores['R11']);
+        $stmt->bind_param('issssssiiiii', $id_entidad, $fuente_datos, $valores['R1'], $valores['R2'], $valores['R3'], $valores['R4'], $valores['R5'], $valores['R6'], $valores['R7'], $valores['R8'], $valores['R9'], $valores['R10'], $valores['R11']);
         if ($stmt->execute()) {
             $exito = true;
             echo '<script>alert("Datos guardados correctamente.");window.location.href="captura_secciones.php?id_entidad=' . $id_entidad . '";</script>';
