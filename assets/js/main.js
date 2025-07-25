@@ -1,0 +1,1 @@
+// Archivo preparado para funcionalidades JS personalizadas de SENSEA 
