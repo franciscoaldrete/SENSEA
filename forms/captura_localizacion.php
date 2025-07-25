@@ -29,16 +29,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores[] = 'El campo fuente de datos es obligatorio.';
     }
     if (empty($errores)) {
+        // Asegurar que todos los valores estén definidos
+        $R1 = $valores['R1'] ?? '';
+        $R2 = $valores['R2'] ?? '';
+        $R3 = $valores['R3'] ?? '';
+        $R4 = $valores['R4'] ?? '';
+        $R5 = $valores['R5'] ?? '';
+        $R6 = intval($valores['R6'] ?? 0);
+        $R7 = intval($valores['R7'] ?? 0);
+        $R8 = intval($valores['R8'] ?? 0);
+        $R9 = intval($valores['R9'] ?? 0);
+        $R10 = intval($valores['R10'] ?? 0);
+        $R11 = intval($valores['R11'] ?? 0);
+        
         $stmt = $conn->prepare("INSERT INTO datoslocalizacion (id_entidad, fuente_datos, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('issssssiiiii', $id_entidad, $fuente_datos, $valores['R1'], $valores['R2'], $valores['R3'], $valores['R4'], $valores['R5'], $valores['R6'], $valores['R7'], $valores['R8'], $valores['R9'], $valores['R10'], $valores['R11']);
-        if ($stmt->execute()) {
-            $exito = true;
-            echo '<script>alert("Datos guardados correctamente.");window.location.href="captura_secciones.php?id_entidad=' . $id_entidad . '";</script>';
-            exit;
+        if ($stmt === false) {
+            $errores[] = 'Error en la consulta de inserción: ' . $conn->error;
         } else {
-            $errores[] = 'Error al guardar: ' . $stmt->error;
+            $stmt->bind_param('issssssiiiii', $id_entidad, $fuente_datos, $R1, $R2, $R3, $R4, $R5, $R6, $R7, $R8, $R9, $R10, $R11);
+            if ($stmt->execute()) {
+                $exito = true;
+                echo '<script>alert("Datos guardados correctamente.");window.location.href="captura_secciones.php?id_entidad=' . $id_entidad . '";</script>';
+                exit;
+            } else {
+                $errores[] = 'Error al guardar: ' . $stmt->error;
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 // Obtener datos de la entidad
