@@ -105,5 +105,55 @@
         </div>
     </div>
     <?php include 'forms/footer.php'; ?>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cargar información del usuario desde localStorage
+        const empleado = localStorage.getItem('empleado');
+        const nombreUsuario = localStorage.getItem('nombreUsuario');
+        const fotoUsuario = localStorage.getItem('fotoUsuario');
+        
+        // Si no hay usuario logueado, redirigir al login
+        if (!empleado) {
+            window.location.href = 'index.php';
+            return;
+        }
+        
+        // Actualizar información del usuario en la interfaz
+        if (nombreUsuario) {
+            document.getElementById('nombreUsuarioMenu').textContent = nombreUsuario;
+            document.getElementById('nombreUsuarioDetalle').textContent = nombreUsuario;
+        }
+        
+        if (fotoUsuario) {
+            document.getElementById('avatarMenu').src = fotoUsuario;
+            document.getElementById('avatarDetalle').src = fotoUsuario;
+        }
+        
+        // Manejar logout
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                // Limpiar localStorage
+                localStorage.removeItem('empleado');
+                localStorage.removeItem('nombreUsuario');
+                localStorage.removeItem('fotoUsuario');
+                
+                // Redirigir al login
+                window.location.href = 'index.php';
+            }
+        });
+        
+        // Manejar editar perfil (placeholder)
+        document.getElementById('editProfileBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Función de editar perfil próximamente disponible.');
+        });
+    });
+    </script>
 </body>
 </html> 
