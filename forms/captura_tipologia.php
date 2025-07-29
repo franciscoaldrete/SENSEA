@@ -1,9 +1,21 @@
 <?php
-// Configuración de conexión
-$host = 'localhost';
-$user = 'fcoalder_sensea';
-$pass = 'Sensea2025';
-$db = 'fcoalder_SENSEA';
+// Detectar si estamos en localhost o en el servidor
+$is_localhost = in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1']) || strpos($_SERVER['HTTP_HOST'], 'localhost') !== false;
+
+// Configuración de conexión según el entorno
+if ($is_localhost) {
+    // Configuración para localhost (XAMPP)
+    $host = 'localhost';
+    $user = 'root';
+    $pass = '';
+    $db = 'fcoalder_SENSEA';
+} else {
+    // Configuración para servidor en la nube
+    $host = 'localhost';
+    $user = 'fcoalder_sensea';
+    $pass = 'Sensea2025';
+    $db = 'fcoalder_SENSEA';
+}
 
 // Obtener id_entidad de la URL
 $id_entidad = isset($_GET['id_entidad']) ? intval($_GET['id_entidad']) : 0;
