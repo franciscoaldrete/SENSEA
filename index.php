@@ -44,7 +44,7 @@
                         <a class="nav-link" href="#equipo">Equipo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/colaboradores.html">Colaboradores</a>
+                        <a class="nav-link" href="pages/colaboradores.php">Colaboradores</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#resultados">Resultados</a>
@@ -469,7 +469,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 text-center">
-                                <a href="pages/colaboradores.html" class="btn btn-outline-light btn-lg">
+                                <a href="pages/colaboradores.php" class="btn btn-outline-light btn-lg">
                                     <i class="fas fa-users me-2"></i>Ver Todos los Colaboradores
                                 </a>
                             </div>

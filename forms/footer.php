@@ -2,7 +2,8 @@
 // Detectar la ruta base según desde dónde se llama el footer
 $current_script = $_SERVER['SCRIPT_NAME'];
 $is_from_admin = strpos($current_script, 'admin.php') !== false;
-$base_path = $is_from_admin ? '' : '../';
+$is_from_pages = strpos($current_script, 'pages/') !== false;
+$base_path = $is_from_admin ? '' : ($is_from_pages ? '../' : '../');
 ?>
     <!-- Footer -->
     <footer class="footer-dark">
@@ -15,13 +16,13 @@ $base_path = $is_from_admin ? '' : '../';
                 <div class="col-lg-4">
                     <h5>Enlaces Rápidos</h5>
                     <ul class="footer-links">
-                        <li><a href="<?= $base_path ?>index.html#vision">Visión</a></li>
-                        <li><a href="<?= $base_path ?>index.html#metodologia">Metodología</a></li>
-                        <li><a href="<?= $base_path ?>index.html#indicadores">Indicadores</a></li>
-                        <li><a href="<?= $base_path ?>index.html#etapas">Etapas</a></li>
-                        <li><a href="<?= $base_path ?>index.html#equipo">Equipo</a></li>
-                        <li><a href="<?= $base_path ?>pages/colaboradores.html">Colaboradores</a></li>
-                        <li><a href="<?= $base_path ?>index.html#resultados">Resultados</a></li>
+                        <li><a href="<?= $base_path ?>index.php#vision">Visión</a></li>
+                        <li><a href="<?= $base_path ?>index.php#metodologia">Metodología</a></li>
+                        <li><a href="<?= $base_path ?>index.php#indicadores">Indicadores</a></li>
+                        <li><a href="<?= $base_path ?>index.php#etapas">Etapas</a></li>
+                        <li><a href="<?= $base_path ?>index.php#equipo">Equipo</a></li>
+                        <li><a href="<?= $base_path ?>pages/colaboradores.php">Colaboradores</a></li>
+                        <li><a href="<?= $base_path ?>index.php#resultados">Resultados</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4">
