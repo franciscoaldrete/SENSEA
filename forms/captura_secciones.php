@@ -66,7 +66,7 @@ include 'header.php';
 </style>
 
 <div class="container py-5">
-    <a href="../admin.html" class="text-primary mb-3 d-inline-block"><i class="fas fa-arrow-left me-2"></i>Panel principal</a>
+    <a href="../admin.php" class="text-primary mb-3 d-inline-block"><i class="fas fa-arrow-left me-2"></i>Panel principal</a>
     <h1 class="section-title mb-4">Captura de Variables/Indicadores de Municipios</h1>
     <div class="mb-4 p-4 bg-white rounded shadow-sm">
         <h5 class="mb-2"><i class="fas fa-map-marker-alt icon-purple me-2"></i>Entidad seleccionada</h5>
