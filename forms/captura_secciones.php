@@ -94,16 +94,18 @@ include 'header.php';
             </a>
         </div>
         <div class="col-md-6 col-lg-4">
-            <div class="card card-section h-100">
-                <div class="card-body">
-                    <div class="mb-3"><i class="fas fa-layer-group fa-2x icon-cyan"></i></div>
-                    <h5 class="card-title">Tipología territorial (ERS Codes)</h5>
-                    <p class="card-text text-muted">Clasificación territorial y códigos ERS.</p>
-                    <span class="<?= $estado_tipologia === 'completo' ? 'estado-completo' : 'estado-pendiente' ?>">
-                        <?= $estado_tipologia === 'completo' ? 'Completo' : 'Pendiente' ?>
-                    </span>
+            <a href="captura_tipologia.php?id_entidad=<?= $id_entidad ?>" style="text-decoration:none;">
+                <div class="card card-section h-100">
+                    <div class="card-body">
+                        <div class="mb-3"><i class="fas fa-layer-group fa-2x icon-cyan"></i></div>
+                        <h5 class="card-title">Tipología territorial (ERS Codes)</h5>
+                        <p class="card-text text-muted">Clasificación territorial y códigos ERS.</p>
+                        <span class="<?= $estado_tipologia === 'completo' ? 'estado-completo' : 'estado-pendiente' ?>">
+                            <?= $estado_tipologia === 'completo' ? 'Completo' : 'Pendiente' ?>
+                        </span>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-6 col-lg-4">
             <div class="card card-section h-100">
