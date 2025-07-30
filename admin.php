@@ -89,11 +89,13 @@
                 </a>
             </div>
             <div class="col-md-6 col-lg-4">
-                <div class="card dashboard-card text-center p-4 h-100">
-                    <div class="dashboard-icon text-success"><i class="fas fa-users-cog"></i></div>
-                    <h4 class="fw-bold mb-2" style="color: #43a047;">Análisis de expertos</h4>
-                    <p class="text-muted">Captura de análisis por categorías: Social, Ambiental y Económico.</p>
-                </div>
+                <a href="forms/analisis_expertos.php" style="text-decoration:none;">
+                    <div class="card dashboard-card text-center p-4 h-100">
+                        <div class="dashboard-icon text-success"><i class="fas fa-users-cog"></i></div>
+                        <h4 class="fw-bold mb-2" style="color: #43a047;">Análisis de expertos</h4>
+                        <p class="text-muted">Captura de análisis por categorías: Social, Ambiental y Económico.</p>
+                    </div>
+                </a>
             </div>
             <div class="col-md-6 col-lg-4">
                 <div class="card dashboard-card text-center p-4 h-100">
