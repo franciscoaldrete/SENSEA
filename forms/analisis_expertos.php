@@ -219,7 +219,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-users me-2"></i><i class="fas fa-coins"></i>
+                        <i class="fas fa-users me-2"></i><i class="fas fa-piggy-bank"></i>
                     </div>
                     <h3 class="analysis-title">Social - Económico</h3>
                     <p class="analysis-description">
@@ -237,7 +237,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-leaf me-2"></i><i class="fas fa-coins"></i>
+                        <i class="fas fa-leaf me-2"></i><i class="fas fa-piggy-bank"></i>
                     </div>
                     <h3 class="analysis-title">Ambiental - Económico</h3>
                     <p class="analysis-description">
@@ -273,7 +273,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-coins me-2"></i><i class="fas fa-leaf"></i>
+                        <i class="fas fa-piggy-bank me-2"></i><i class="fas fa-leaf"></i>
                     </div>
                     <h3 class="analysis-title">Económico - Ambiental</h3>
                     <p class="analysis-description">
@@ -291,7 +291,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-coins me-2"></i><i class="fas fa-users"></i>
+                        <i class="fas fa-piggy-bank me-2"></i><i class="fas fa-users"></i>
                     </div>
                     <h3 class="analysis-title">Económico - Social</h3>
                     <p class="analysis-description">
