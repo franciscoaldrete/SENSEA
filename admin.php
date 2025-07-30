@@ -111,21 +111,11 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Verificar si Bootstrap está disponible
-        if (typeof bootstrap === 'undefined') {
-            console.error('Bootstrap no está disponible');
-            return;
-        }
-        
         // Inicializar todos los dropdowns de Bootstrap
         var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        console.log('Dropdowns encontrados:', dropdownElementList.length);
-        
         var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
             return new bootstrap.Dropdown(dropdownToggleEl);
         });
-        
-        console.log('Dropdowns inicializados:', dropdownList.length);
         
         // Cargar información del usuario desde localStorage
         const empleado = localStorage.getItem('empleado');
@@ -168,20 +158,6 @@
         document.getElementById('editProfileBtn').addEventListener('click', function(e) {
             e.preventDefault();
             alert('Función de editar perfil próximamente disponible.');
-        });
-        
-        // Agregar evento de clic manual como respaldo
-        document.getElementById('userMenu').addEventListener('click', function(e) {
-            console.log('Botón de usuario clickeado');
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const dropdownMenu = this.nextElementSibling;
-            if (dropdownMenu.classList.contains('show')) {
-                dropdownMenu.classList.remove('show');
-            } else {
-                dropdownMenu.classList.add('show');
-            }
         });
     });
     </script>
