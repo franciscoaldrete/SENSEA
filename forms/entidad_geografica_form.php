@@ -233,9 +233,7 @@ include 'header.php';
                     <i class="fas fa-list me-2 text-primary"></i>Entidades Existentes
                 </h3>
                 
-                <div class="mb-3">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre o código...">
-                </div>
+
 
                 <div class="table-responsive">
                     <table class="table table-hover" id="entidadesTable">
@@ -274,13 +272,20 @@ include 'header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
     const entidadesTable = document.getElementById('entidadesTable');
     const entidadForm = document.getElementById('entidadForm');
     
-    // Búsqueda en tiempo real
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
+    // Campos del formulario para filtrado
+    const tipoInput = document.getElementById('tipo_entidad');
+    const nombreInput = document.getElementById('nombre_entidad');
+    const codigoInput = document.getElementById('codigo_entidad');
+    
+    // Función para filtrar la tabla
+    function filtrarTabla() {
+        const tipoFiltro = tipoInput.value.toLowerCase().trim();
+        const nombreFiltro = nombreInput.value.toLowerCase().trim();
+        const codigoFiltro = codigoInput.value.toLowerCase().trim();
+        
         const rows = entidadesTable.querySelectorAll('tbody tr');
         
         rows.forEach(row => {
@@ -288,13 +293,27 @@ document.addEventListener('DOMContentLoaded', function() {
             const nombre = row.getAttribute('data-nombre').toLowerCase();
             const codigo = row.getAttribute('data-codigo').toLowerCase();
             
-            const matches = tipo.includes(searchTerm) || 
-                           nombre.includes(searchTerm) || 
-                           codigo.includes(searchTerm);
+            // Filtrado AND: todos los campos deben coincidir si están llenos
+            let matches = true;
+            
+            if (tipoFiltro && !tipo.includes(tipoFiltro)) {
+                matches = false;
+            }
+            if (nombreFiltro && !nombre.includes(nombreFiltro)) {
+                matches = false;
+            }
+            if (codigoFiltro && !codigo.includes(codigoFiltro)) {
+                matches = false;
+            }
             
             row.style.display = matches ? '' : 'none';
         });
-    });
+    }
+    
+    // Eventos para filtrado en tiempo real
+    tipoInput.addEventListener('input', filtrarTabla);
+    nombreInput.addEventListener('input', filtrarTabla);
+    codigoInput.addEventListener('input', filtrarTabla);
     
     // Seleccionar entidad de la tabla
     document.querySelectorAll('.seleccionar-entidad').forEach(btn => {
