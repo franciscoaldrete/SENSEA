@@ -1,4 +1,7 @@
 <?php
+// Configurar zona horaria para México
+date_default_timezone_set('America/Mexico_City');
+
 // Detectar si estamos en localhost o en el servidor
 $is_localhost = in_array($_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1']) || strpos($_SERVER['HTTP_HOST'], 'localhost') !== false;
 
@@ -33,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre_entidad = trim($_POST['nombre_entidad'] ?? '');
     $codigo_entidad = trim($_POST['codigo_entidad'] ?? '');
     $fuente_general = trim($_POST['fuente_general'] ?? '');
+    // Configurar zona horaria para México
+    date_default_timezone_set('America/Mexico_City');
     $fecha_registro = date('Y-m-d H:i:s');
 
     // Validaciones
