@@ -111,37 +111,19 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM cargado');
-        
-        // Verificar si Bootstrap está disponible
-        if (typeof bootstrap === 'undefined') {
-            console.error('Bootstrap no está disponible');
-            return;
-        }
-        
-        console.log('Bootstrap disponible');
-        
         // Inicializar todos los dropdowns de Bootstrap
         var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        console.log('Dropdowns encontrados:', dropdownElementList.length);
-        
         var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-            console.log('Inicializando dropdown:', dropdownToggleEl);
             return new bootstrap.Dropdown(dropdownToggleEl);
         });
-        
-        console.log('Dropdowns inicializados:', dropdownList.length);
         
         // Cargar información del usuario desde localStorage
         const empleado = localStorage.getItem('empleado');
         const nombreUsuario = localStorage.getItem('nombreUsuario');
         const fotoUsuario = localStorage.getItem('fotoUsuario');
         
-        console.log('Usuario logueado:', empleado);
-        
         // Si no hay usuario logueado, redirigir al login
         if (!empleado) {
-            console.log('No hay usuario, redirigiendo...');
             window.location.href = 'index.php';
             return;
         }
@@ -176,20 +158,6 @@
         document.getElementById('editProfileBtn').addEventListener('click', function(e) {
             e.preventDefault();
             alert('Función de editar perfil próximamente disponible.');
-        });
-        
-        // Agregar evento de clic manual al botón del dropdown
-        document.getElementById('userMenu').addEventListener('click', function(e) {
-            console.log('Botón de usuario clickeado');
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const dropdownMenu = this.nextElementSibling;
-            if (dropdownMenu.classList.contains('show')) {
-                dropdownMenu.classList.remove('show');
-            } else {
-                dropdownMenu.classList.add('show');
-            }
         });
     });
     </script>
