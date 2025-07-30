@@ -106,8 +106,8 @@ include 'header.php';
     
     /* Colores específicos para cada tarjeta */
     .card-social-ambiental {
-        --card-color-1: #4facfe;
-        --card-color-2: #00f2fe;
+        --card-color-1: #667eea;
+        --card-color-2: #764ba2;
     }
     
     .card-social-economico {
@@ -116,23 +116,23 @@ include 'header.php';
     }
     
     .card-ambiental-economico {
+        --card-color-1: #4facfe;
+        --card-color-2: #00f2fe;
+    }
+    
+    .card-ambiental-social {
         --card-color-1: #43e97b;
         --card-color-2: #38f9d7;
     }
     
-    .card-ambiental-social {
+    .card-economico-ambiental {
         --card-color-1: #fa709a;
         --card-color-2: #fee140;
     }
     
-    .card-economico-ambiental {
+    .card-economico-social {
         --card-color-1: #a8edea;
         --card-color-2: #fed6e3;
-    }
-    
-    .card-economico-social {
-        --card-color-1: #ffecd2;
-        --card-color-2: #fcb69f;
     }
     
     .page-header {
@@ -193,7 +193,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-users me-2"></i><i class="fas fa-leaf"></i>
                     </div>
                     <h3 class="analysis-title">Social - Ambiental</h3>
                     <p class="analysis-description">
@@ -211,7 +211,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-handshake"></i>
+                        <i class="fas fa-users me-2"></i><i class="fas fa-chart-line"></i>
                     </div>
                     <h3 class="analysis-title">Social - Económico</h3>
                     <p class="analysis-description">
@@ -229,7 +229,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-leaf"></i>
+                        <i class="fas fa-leaf me-2"></i><i class="fas fa-chart-line"></i>
                     </div>
                     <h3 class="analysis-title">Ambiental - Económico</h3>
                     <p class="analysis-description">
@@ -247,7 +247,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-seedling"></i>
+                        <i class="fas fa-leaf me-2"></i><i class="fas fa-users"></i>
                     </div>
                     <h3 class="analysis-title">Ambiental - Social</h3>
                     <p class="analysis-description">
@@ -265,7 +265,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-coins"></i>
+                        <i class="fas fa-chart-line me-2"></i><i class="fas fa-leaf"></i>
                     </div>
                     <h3 class="analysis-title">Económico - Ambiental</h3>
                     <p class="analysis-description">
@@ -283,7 +283,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-chart-pie"></i>
+                        <i class="fas fa-chart-line me-2"></i><i class="fas fa-users"></i>
                     </div>
                     <h3 class="analysis-title">Económico - Social</h3>
                     <p class="analysis-description">
