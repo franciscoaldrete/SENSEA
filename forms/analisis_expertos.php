@@ -50,6 +50,43 @@ include 'header.php';
         overflow: hidden;
     }
     
+    /* Fondos de colores claros para cada tarjeta */
+    .card-social-ambiental {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        --card-color-1: #667eea;
+        --card-color-2: #764ba2;
+    }
+    
+    .card-social-economico {
+        background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+        --card-color-1: #f093fb;
+        --card-color-2: #f5576c;
+    }
+    
+    .card-ambiental-economico {
+        background: linear-gradient(135deg, #e8f5e8 0%, #e3f2fd 100%);
+        --card-color-1: #4facfe;
+        --card-color-2: #00f2fe;
+    }
+    
+    .card-ambiental-social {
+        background: linear-gradient(135deg, #e8f5e8 0%, #f3e5f5 100%);
+        --card-color-1: #43e97b;
+        --card-color-2: #38f9d7;
+    }
+    
+    .card-economico-ambiental {
+        background: linear-gradient(135deg, #fff3e0 0%, #e8f5e8 100%);
+        --card-color-1: #fa709a;
+        --card-color-2: #fee140;
+    }
+    
+    .card-economico-social {
+        background: linear-gradient(135deg, #fff3e0 0%, #fce4ec 100%);
+        --card-color-1: #a8edea;
+        --card-color-2: #fed6e3;
+    }
+    
     .analysis-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 30px rgba(0,0,0,0.15);
@@ -104,36 +141,7 @@ include 'header.php';
         color: #155724;
     }
     
-    /* Colores específicos para cada tarjeta */
-    .card-social-ambiental {
-        --card-color-1: #667eea;
-        --card-color-2: #764ba2;
-    }
-    
-    .card-social-economico {
-        --card-color-1: #f093fb;
-        --card-color-2: #f5576c;
-    }
-    
-    .card-ambiental-economico {
-        --card-color-1: #4facfe;
-        --card-color-2: #00f2fe;
-    }
-    
-    .card-ambiental-social {
-        --card-color-1: #43e97b;
-        --card-color-2: #38f9d7;
-    }
-    
-    .card-economico-ambiental {
-        --card-color-1: #fa709a;
-        --card-color-2: #fee140;
-    }
-    
-    .card-economico-social {
-        --card-color-1: #a8edea;
-        --card-color-2: #fed6e3;
-    }
+
     
     .page-header {
         text-align: center;
@@ -211,7 +219,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-users me-2"></i><i class="fas fa-chart-line"></i>
+                        <i class="fas fa-users me-2"></i><i class="fas fa-coins"></i>
                     </div>
                     <h3 class="analysis-title">Social - Económico</h3>
                     <p class="analysis-description">
@@ -229,7 +237,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-leaf me-2"></i><i class="fas fa-chart-line"></i>
+                        <i class="fas fa-leaf me-2"></i><i class="fas fa-coins"></i>
                     </div>
                     <h3 class="analysis-title">Ambiental - Económico</h3>
                     <p class="analysis-description">
@@ -265,7 +273,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-chart-line me-2"></i><i class="fas fa-leaf"></i>
+                        <i class="fas fa-coins me-2"></i><i class="fas fa-leaf"></i>
                     </div>
                     <h3 class="analysis-title">Económico - Ambiental</h3>
                     <p class="analysis-description">
@@ -283,7 +291,7 @@ include 'header.php';
                 </div>
                 <div class="text-center">
                     <div class="analysis-icon">
-                        <i class="fas fa-chart-line me-2"></i><i class="fas fa-users"></i>
+                        <i class="fas fa-coins me-2"></i><i class="fas fa-users"></i>
                     </div>
                     <h3 class="analysis-title">Económico - Social</h3>
                     <p class="analysis-description">
