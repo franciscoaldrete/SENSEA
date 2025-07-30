@@ -26,6 +26,7 @@ if ($conn->connect_error) {
 $errores = [];
 $exito = false;
 $entidad_existente = null;
+$datos_a_insertar = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo_entidad = trim($_POST['tipo_entidad'] ?? '');
@@ -42,13 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errores[] = 'El nombre de la entidad es obligatorio.';
     }
 
-    // Buscar si ya existe la entidad
+    // Buscar si ya existe la entidad (por nombre Y código)
     if (empty($errores)) {
-        $stmt = $conn->prepare("SELECT id_entidad FROM entidadesgeograficas WHERE tipo_entidad = ? AND nombre_entidad = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT id_entidad FROM entidadesgeograficas WHERE tipo_entidad = ? AND nombre_entidad = ? AND codigo_entidad = ? LIMIT 1");
         if ($stmt === false) {
             $errores[] = 'Error en la consulta de búsqueda: ' . $conn->error;
         } else {
-            $stmt->bind_param('ss', $tipo_entidad, $nombre_entidad);
+            $stmt->bind_param('sss', $tipo_entidad, $nombre_entidad, $codigo_entidad);
             if ($stmt->execute()) {
                 $stmt->store_result();
                 if ($stmt->num_rows > 0) {
@@ -66,8 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Si no existe, insertar
+    // Si no existe, preparar datos para confirmación
     if (empty($errores) && !$entidad_existente) {
+        $datos_a_insertar = [
+            'tipo_entidad' => $tipo_entidad,
+            'nombre_entidad' => $nombre_entidad,
+            'codigo_entidad' => $codigo_entidad,
+            'fuente_general' => $fuente_general,
+            'fecha_registro' => $fecha_registro
+        ];
+        
+        // Insertar directamente (sin confirmación por ahora)
         $stmt = $conn->prepare("INSERT INTO entidadesgeograficas (tipo_entidad, nombre_entidad, codigo_entidad, fuente_general, fecha_registro) VALUES (?, ?, ?, ?, ?)");
         if ($stmt === false) {
             $errores[] = 'Error en la consulta de inserción: ' . $conn->error;
@@ -85,10 +95,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Obtener todas las entidades existentes para la tabla
+$entidades_existentes = [];
+$stmt = $conn->prepare("SELECT id_entidad, tipo_entidad, nombre_entidad, codigo_entidad, fuente_general, fecha_registro FROM entidadesgeograficas ORDER BY nombre_entidad ASC");
+if ($stmt && $stmt->execute()) {
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $entidades_existentes[] = $row;
+    }
+}
+$stmt->close();
+
 // Definir título de la página para el header
 $titulo_pagina = 'Captura de Entidad Geográfica';
 include 'header.php';
 ?>
+
 <style>
     body {
         background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
@@ -99,6 +121,14 @@ include 'header.php';
         border-radius: 1.5rem;
         box-shadow: 0 4px 24px rgba(0,0,0,0.08);
         padding: 2rem 2.5rem;
+        background: #fff;
+        margin-top: 2rem;
+    }
+    .table-card {
+        border: none;
+        border-radius: 1.5rem;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 2rem;
         background: #fff;
         margin-top: 2rem;
     }
@@ -117,42 +147,218 @@ include 'header.php';
     .required {
         color: #e63946;
     }
+    .entidad-row {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .entidad-row:hover {
+        background-color: #f8f9fa;
+    }
+    .entidad-row.selected {
+        background-color: #e3f2fd;
+    }
+    .search-highlight {
+        background-color: #fff3cd;
+        font-weight: bold;
+    }
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    .form-control:focus {
+        border-color: #1d3557;
+        box-shadow: 0 0 0 0.2rem rgba(29, 53, 87, 0.25);
+    }
 </style>
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="form-card w-100" style="max-width: 500px;">
-        <h2 class="form-title text-center mb-4"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Captura de Entidad Geográfica</h2>
-        <?php if ($errores): ?>
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    <?php foreach ($errores as $error): ?>
-                        <li><?= htmlspecialchars($error) ?></li>
-                    <?php endforeach; ?>
-                </ul>
+
+<div class="container py-4">
+    <div class="row">
+        <!-- Formulario de captura -->
+        <div class="col-lg-6">
+            <div class="form-card">
+                <h2 class="form-title text-center mb-4">
+                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Captura de Entidad Geográfica
+                </h2>
+                
+                <?php if ($errores): ?>
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            <?php foreach ($errores as $error): ?>
+                                <li><?= htmlspecialchars($error) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <form method="post" autocomplete="off" id="entidadForm">
+                    <div class="mb-3">
+                        <label for="tipo_entidad">Tipo de entidad <span class="required">*</span>:</label>
+                        <select name="tipo_entidad" id="tipo_entidad" required class="form-select">
+                            <option value="">Seleccione...</option>
+                            <option value="Municipio">Municipio</option>
+                            <option value="Región">Región</option>
+                            <option value="Zona">Zona</option>
+                            <option value="Sección">Sección</option>
+                            <option value="Ejido">Ejido</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nombre_entidad">Nombre de la entidad <span class="required">*</span>:</label>
+                        <input type="text" name="nombre_entidad" id="nombre_entidad" maxlength="255" required class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="codigo_entidad">Código de la entidad:</label>
+                        <input type="text" name="codigo_entidad" id="codigo_entidad" maxlength="50" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fuente_general">Fuente general:</label>
+                        <textarea name="fuente_general" id="fuente_general" rows="2" class="form-control"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save me-2"></i>Guardar y continuar
+                    </button>
+                </form>
             </div>
-        <?php endif; ?>
-        <form method="post" autocomplete="off">
-            <label for="tipo_entidad">Tipo de entidad*:</label>
-            <select name="tipo_entidad" id="tipo_entidad" required class="form-select mb-3">
-                <option value="">Seleccione...</option>
-                <option value="Municipio">Municipio</option>
-                <option value="Región">Región</option>
-                <option value="Zona">Zona</option>
-                <option value="Sección">Sección</option>
-                <option value="Ejido">Ejido</option>
-                <option value="Otro">Otro</option>
-            </select>
+        </div>
 
-            <label for="nombre_entidad">Nombre de la entidad*:</label>
-            <input type="text" name="nombre_entidad" id="nombre_entidad" maxlength="255" required class="form-control mb-3">
+        <!-- Tabla de entidades existentes -->
+        <div class="col-lg-6">
+            <div class="table-card">
+                <h3 class="form-title mb-3">
+                    <i class="fas fa-list me-2 text-primary"></i>Entidades Existentes
+                </h3>
+                
+                <div class="mb-3">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre o código...">
+                </div>
 
-            <label for="codigo_entidad">Código de la entidad:</label>
-            <input type="text" name="codigo_entidad" id="codigo_entidad" maxlength="50" class="form-control mb-3">
-
-            <label for="fuente_general">Fuente general:</label>
-            <textarea name="fuente_general" id="fuente_general" rows="2" class="form-control mb-3"></textarea>
-
-            <button type="submit" class="btn btn-primary w-100">Guardar y continuar</button>
-        </form>
+                <div class="table-responsive">
+                    <table class="table table-hover" id="entidadesTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Nombre</th>
+                                <th>Código</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($entidades_existentes as $entidad): ?>
+                                <tr class="entidad-row" data-id="<?= $entidad['id_entidad'] ?>" 
+                                    data-tipo="<?= htmlspecialchars($entidad['tipo_entidad']) ?>"
+                                    data-nombre="<?= htmlspecialchars($entidad['nombre_entidad']) ?>"
+                                    data-codigo="<?= htmlspecialchars($entidad['codigo_entidad']) ?>"
+                                    data-fuente="<?= htmlspecialchars($entidad['fuente_general']) ?>">
+                                    <td><?= htmlspecialchars($entidad['tipo_entidad']) ?></td>
+                                    <td><?= htmlspecialchars($entidad['nombre_entidad']) ?></td>
+                                    <td><?= htmlspecialchars($entidad['codigo_entidad']) ?></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-outline-primary seleccionar-entidad">
+                                            <i class="fas fa-check"></i> Seleccionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const entidadesTable = document.getElementById('entidadesTable');
+    const entidadForm = document.getElementById('entidadForm');
+    
+    // Búsqueda en tiempo real
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = entidadesTable.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const tipo = row.getAttribute('data-tipo').toLowerCase();
+            const nombre = row.getAttribute('data-nombre').toLowerCase();
+            const codigo = row.getAttribute('data-codigo').toLowerCase();
+            
+            const matches = tipo.includes(searchTerm) || 
+                           nombre.includes(searchTerm) || 
+                           codigo.includes(searchTerm);
+            
+            row.style.display = matches ? '' : 'none';
+        });
+    });
+    
+    // Seleccionar entidad de la tabla
+    document.querySelectorAll('.seleccionar-entidad').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const id = row.getAttribute('data-id');
+            const tipo = row.getAttribute('data-tipo');
+            const nombre = row.getAttribute('data-nombre');
+            const codigo = row.getAttribute('data-codigo');
+            const fuente = row.getAttribute('data-fuente');
+            
+            // Llenar el formulario
+            document.getElementById('tipo_entidad').value = tipo;
+            document.getElementById('nombre_entidad').value = nombre;
+            document.getElementById('codigo_entidad').value = codigo;
+            document.getElementById('fuente_general').value = fuente;
+            
+            // Confirmar y continuar
+            if (confirm(`¿Deseas continuar con la entidad seleccionada?\n\nTipo: ${tipo}\nNombre: ${nombre}\nCódigo: ${codigo}`)) {
+                window.location.href = `captura_secciones.php?id_entidad=${id}`;
+            }
+        });
+    });
+    
+    // Validación antes de enviar
+    entidadForm.addEventListener('submit', function(e) {
+        const tipo = document.getElementById('tipo_entidad').value.trim();
+        const nombre = document.getElementById('nombre_entidad').value.trim();
+        const codigo = document.getElementById('codigo_entidad').value.trim();
+        
+        if (!tipo || !nombre) {
+            alert('Por favor completa los campos obligatorios.');
+            e.preventDefault();
+            return;
+        }
+        
+        // Verificar si ya existe
+        const rows = entidadesTable.querySelectorAll('tbody tr');
+        let existe = false;
+        
+        rows.forEach(row => {
+            const rowTipo = row.getAttribute('data-tipo');
+            const rowNombre = row.getAttribute('data-nombre');
+            const rowCodigo = row.getAttribute('data-codigo');
+            
+            if (rowTipo === tipo && rowNombre === nombre && rowCodigo === codigo) {
+                existe = true;
+            }
+        });
+        
+        if (existe) {
+            alert('Esta entidad ya existe. Por favor selecciónala de la tabla.');
+            e.preventDefault();
+            return;
+        }
+        
+        // Confirmar inserción
+        const datos = `Tipo: ${tipo}\nNombre: ${nombre}\nCódigo: ${codigo}`;
+        if (!confirm(`Entidad no existente. ¿Deseas darla de alta?\n\n${datos}`)) {
+            e.preventDefault();
+            return;
+        }
+    });
+});
+</script>
+
 <?php include 'footer.php'; ?> 
